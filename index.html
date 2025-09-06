@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Sponsorenlauf Anmeldung</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #56ab2f, #a8e063);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2d572c;
+      margin-bottom: 1.5rem;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    form input, form select, form button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    form button {
+      background: #2d572c;
+      color: white;
+      border: none;
+      margin-top: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background: #1e3c1e;
+    }
+
+    #response {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sponsorenlauf</h1>
+
+    <form id="sponsorForm">
+      <label>Teilnehmer-Name:</label>
+      <input type="text" name="person" placeholder="z. B. Max Müller" required>
+
+      <label>Sponsor-Name:</label>
+      <input type="text" name="sponsor" placeholder="z. B. Onkel Peter" required>
+
+      <label>Betrag:</label>
+      <input type="number" step="0.01" name="betrag" placeholder="z. B. 5.00" required>
+
+      <label>Typ:</label>
+      <select name="typ" required>
+        <option value="pro Runde">Pro Runde</option>
+        <option value="pauschal">Pauschal</option>
+      </select>
+
+      <label>Zahlungsart:</label>
+      <select name="zahlungsart" required>
+        <option value="Twint">Twint</option>
+        <option value="Bar">Bar</option>
+        <option value="Bank">Bank</option>
+      </select>
+
+      <button type="submit">Eintragen</button>
+    </form>
+
+    <p id="response"></p>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "DEINE_GOOGLE_SCRIPT_URL_HIER"; // ersetzen!
+
+    document.getElementById("sponsorForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const data = {
+        person: this.person.value,
+        sponsor: this.sponsor.value,
+        betrag: this.betrag.value,
+        typ: this.typ.value,
+        zahlungsart: this.zahlungsart.value
+      };
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.text())
+      .then(txt => {
+        document.getElementById("response").innerText = "✅ Sponsor gespeichert!";
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById("response").innerText = "❌ Fehler: " + err;
+      });
+    });
+  </script>
+</body>
+</html>
